@@ -35,8 +35,23 @@ export class LoginComponent implements OnInit {
     })
   }
 
-  submit():void{
-    this.authService.login
+  submit(): void {
+    this.authService.login({
+      username: this.loginForm.value.username,
+      password: this.loginForm.value.password
+    }).subscribe(data => {
+      console.log(data);
+
+      this.tokenStorage.saveToken(data.token);
+      this.tokenStorage.saveUser(data);
+
+      this.notificationService.showSnackBar('SuccessFully logged in');
+      this.router.navigate(['/']);
+      window.location.reload();
+    }, error => {
+      console.log(error);
+      this.notificationService.showSnackBar(error.message);
+    });
   }
 
 }
